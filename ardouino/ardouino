@@ -1,0 +1,49 @@
+const int trigPin = 12;  // Broche de déclenchement (trig)
+const int echoPin = 13; // Broche d'écho (echo)
+
+// Include the library:
+#include <LiquidCrystal.h>
+// Create an LCD object. Parameters: (RS, E, D4, D5, D6, D7):
+LiquidCrystal lcd = LiquidCrystal(2, 3, 4, 5, 6, 7);
+
+
+void setup() {
+  Serial.begin(9600);           // Initialisation de la communication série
+  pinMode(trigPin, OUTPUT);      // Configuration de la broche de déclenchement en sortie
+  pinMode(echoPin, INPUT);       // Configuration de la broche d'écho en entrée
+
+    // Specify the LCD's number of columns and rows. Change to (20, 4) for a 20x4 LCD:
+  lcd.begin(16, 2);
+}
+
+void loop() {
+  // Envoi d'une impulsion ultrasonique
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  // Mesure de la durée de l'impulsion réfléchie
+  long duration = pulseIn(echoPin, HIGH);
+
+  // Calcul de la distance en centimètres
+  long distance_cm = duration * 0.034 / 2;
+
+  // Affichage de la distance dans le moniteur série
+  Serial.print("Distance: ");
+  Serial.print(distance_cm);
+  Serial.println(" cm");
+
+  // Set the cursor on the third column and the first row, counting starts at 0:
+  lcd.setCursor(2, 0);
+  // Print the string 'Hello World!':
+  lcd.print("distance =");
+  // Set the cursor on the third column and the second row:
+  lcd.setCursor(2, 1);
+  // Print the string 'LCD tutorial':
+  lcd.print(duration * 0.034 /2);
+  lcd.print("cm");
+
+  delay(1000); // Attente d'une seconde entre chaque mesure
+}
